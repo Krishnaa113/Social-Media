@@ -1,35 +1,95 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import './App.css'
 
 function App() {
-  const [navScrolled, setNavScrolled] = useState(false)
+  const [currentPage, setCurrentPage] = useState('creators') // 'creators' 
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [heroInView, setHeroInView] = useState(false)
+
+  // Enhanced mouse tracking for parallax effects
+  const handleMouseMove = useCallback((e) => {
+    setMousePosition({
+      x: (e.clientX / window.innerWidth) * 100,
+      y: (e.clientY / window.innerHeight) * 100
+    })
+  }, [])
 
   useEffect(() => {
+    // Reset all animations when page mounts
+    const resetAnimations = () => {
+      const animatedElements = document.querySelectorAll('[data-animate]')
+      animatedElements.forEach(el => {
+        el.classList.remove('in-view')
+      })
+      const childElements = document.querySelectorAll('[data-animate-child]')
+      childElements.forEach(el => {
+        el.classList.remove('animate-child-in')
+      })
+    }
+
+    resetAnimations()
+
+    // Enhanced intersection observer with more dynamic animations
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
+            // Add staggered delays for child elements
+            const children = entry.target.querySelectorAll('[data-animate-child]')
+            children.forEach((child, index) => {
+              setTimeout(() => {
+                child.classList.add('animate-child-in')
+              }, index * 100)
+            })
+            
             entry.target.classList.add('in-view')
-            observer.unobserve(entry.target)
+            
+            // Special handling for hero section
+            if (entry.target.classList.contains('hero')) {
+              setHeroInView(true)
+            }
           }
         })
       },
       {
-        threshold: 0.15,
-        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px',
       },
     )
 
-    const animated = document.querySelectorAll('[data-animate]')
-    animated.forEach(el => observer.observe(el))
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      const animated = document.querySelectorAll('[data-animate]')
+      animated.forEach(el => observer.observe(el))
+    }, 100)
 
-    return () => observer.disconnect()
-  }, [])
+    // Mouse move listener for parallax effects
+    window.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [handleMouseMove, currentPage]) // Add currentPage as dependency
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY > 24
-      setNavScrolled(scrolled)
+      // Add scroll-based parallax to hero elements only
+      const heroVisual = document.querySelector('.hero-visual')
+      const heroDiamond = document.querySelector('.hero-diamond-gray')
+      const heroFloating = document.querySelectorAll('.hero-floating')
+      
+      if (heroVisual && window.scrollY < window.innerHeight) {
+        const scrollPercent = window.scrollY / window.innerHeight
+        
+        if (heroDiamond) {
+          heroDiamond.style.transform = `rotate(45deg) translateY(${scrollPercent * 30}px)`
+        }
+        
+        heroFloating.forEach((floating, index) => {
+          floating.style.transform = `translateY(${scrollPercent * (10 + index * 5)}px)`
+        })
+      }
     }
 
     handleScroll()
@@ -37,264 +97,253 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Dynamic hero diamond style based on mouse position
+  const heroDiamondStyle = {
+    transform: `rotate(45deg) translateY(${(mousePosition.y - 50) * 0.1}px) translateX(${(mousePosition.x - 50) * 0.05}px)`,
+    filter: `brightness(${100 + mousePosition.x * 0.2}%)`
+  }
+
   return (
-    <div className="page">
-      <header className={`navbar ${navScrolled ? 'navbar-hidden' : 'navbar-expanded'}`} data-animate="fade-down">
+    <div key="creators" className="page">
+      <header className="navbar">
         <div className="nav-left">
-          <div className="logo-circle">P</div>
-          <span className="logo-text">Pillar</span>
+          <div className="logo-container">
+            <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image" />
+            <span className="logo-text">Urban Desiii</span>
+          </div>
         </div>
-        <nav className="nav-center">
-          <button className="nav-pill active">For Creators</button>
-          <button className="nav-pill">Talent Managers</button>
-        </nav>
         <div className="nav-right">
-          <button className="nav-link">Sign In</button>
-          <button className="btn btn-outline">Try for free</button>
+          <button className="nav-link">Home</button>
+          <button className="nav-link">About</button>
+          <button className="nav-link">Service</button>
+          <button className="nav-link">Contact</button>
+          <button className="nav-link">Subscribe</button>
+          <button className="btn btn-primary">Sign In</button>
         </div>
       </header>
 
       <main>
-        {/* Hero */}
+        {/* Enhanced Hero */}
         <section className="hero" data-animate="fade-up">
           <div className="hero-content">
-            <p className="hero-kicker">All in one Creator Store</p>
-            <h1>
-              All in one
+            <p className="hero-kicker" data-animate-child>All in one Creator Store</p>
+            <h1 data-animate-child>
+              <span className="hero-text-reveal">All in one</span>
               <br />
-              Creator Store
+              <span className="hero-text-reveal" style={{ animationDelay: '0.2s' }}>Creator Store</span>
             </h1>
-            <p className="hero-sub">
+            <p className="hero-sub" data-animate-child>
               Turn followers into customers &amp; brands into partners with just one
               platform.
             </p>
-            <div className="hero-actions">
-              <button className="btn btn-primary hero-cta">Get Started for free</button>
+            <div className="hero-actions" data-animate-child>
+              <button className="btn btn-primary hero-cta animate-bounce-in">
+                Get Started for free
+                <span className="btn-shine"></span>
+              </button>
             </div>
-            <div className="hero-logos-block">
+            <div className="hero-logos-block" data-animate-child>
               <p className="hero-trust-label">
-                OVER 100,000 CREATORS &amp; COACHES RUN THEIR BUSINESSES ON PILLAR
+                OVER 100,000 CREATORS &amp; COACHES RUN THEIR BUSINESSES ON Urban Desiii
               </p>
               <div className="hero-logos">
-                <span>Business Insider</span>
-                <span>TechCrunch</span>
-                <span>Forbes</span>
+                <span className="logo-item">Business Insider</span>
+                <span className="logo-item">TechCrunch</span>
+                <span className="logo-item">Forbes</span>
               </div>
             </div>
           </div>
 
           <div className="hero-visual" data-animate="fade-left">
-            <div className="hero-diamond" />
+            {/* Gray diamond shape */}
+            <div className="hero-diamond-gray" data-animate-child />
 
-            <div className="hero-floating hero-floating--top">
+            <div className="hero-floating hero-floating--top animate-float" data-animate-child style={{ animationDelay: '0.8s' }}>
               <div className="floating-icon">📅</div>
               <div className="floating-text">
                 <div className="floating-title">Coaching</div>
               </div>
             </div>
 
-            <div className="hero-floating hero-floating--right">
+            <div className="hero-floating hero-floating--right animate-float" data-animate-child style={{ animationDelay: '1s' }}>
               <div className="floating-icon">⬇️</div>
               <div className="floating-text">
                 <div className="floating-title">Downloads</div>
               </div>
             </div>
 
-            <div className="hero-floating hero-floating--bottom">
+            <div className="hero-floating hero-floating--bottom animate-float" data-animate-child style={{ animationDelay: '1.2s' }}>
               <div className="floating-icon">✉️</div>
               <div className="floating-text">
                 <div className="floating-title">Email Flows</div>
               </div>
             </div>
 
-            <div className="hero-card">
+            <div className="hero-card animate-card-hover hero-card-delayed" data-animate-child style={{ animationDelay: '1.5s' }}>
+              <div className="hero-card-image">
+                <img 
+                  src="/src/assets/Images/@urbandesiii.png" 
+                  alt="Urban Desiii Profile" 
+                  className="hero-card-profile-image"
+                />
+              </div>
               <div className="creator-header">
-                <div className="avatar" />
+                <div className="avatar animate-pulse-slow" />
                 <div>
                   <div className="creator-name">Lucille</div>
                   <div className="creator-handle">@lucileugc</div>
                 </div>
               </div>
               <div className="creator-tags">
-                <span>Coaching</span>
-                <span>Email Flows</span>
-                <span>Downloads</span>
+                <span className="tag-item">Coaching</span>
+                <span className="tag-item">Email Flows</span>
+                <span className="tag-item">Downloads</span>
               </div>
               <div className="creator-stat-row">
                 <span>Join 100,000+ creators</span>
-                <span className="creator-pill">pillar.io/itsthemcfarlands/mediakit</span>
+                <span className="creator-pill animate-typing">urbandesiii.com/creators/mediakit</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Use Pillar for */}
+        {/* Enhanced Use Urban Desiii for */}
         <section className="use-pillar" data-animate="fade-up">
-          <h2>Use Pillar for</h2>
+          <h2 data-animate-child>Use Urban Desiii for</h2>
           <div className="use-grid">
-            <div className="use-card" data-animate="fade-up">
-              <h3>Create &amp; Sell Digital Products</h3>
-              <p>
-                Create an editable first draft for your next digital product and
-                sell it in minutes.
-              </p>
-            </div>
-            <div className="use-card" data-animate="fade-up">
-              <h3>Drag &amp; Drop “Link-In-Bio” Store</h3>
-              <p>
-                Build, host, and sell any digital product from your link in bio
-                store.
-              </p>
-            </div>
-            <div className="use-card" data-animate="fade-up">
-              <h3>Media Kits &amp; Campaign Reports</h3>
-              <p>Stop manually updating stats. Share live media kits with brands.</p>
-            </div>
-            <div className="use-card" data-animate="fade-up">
-              <h3>Landing Pages &amp; Funnels</h3>
-              <p>Launch dedicated landing pages and high-converting funnels.</p>
-            </div>
-            <div className="use-card" data-animate="fade-up">
-              <h3>Customer Analytics &amp; CRM</h3>
-              <p>Turn followers into customers &amp; manage every relationship.</p>
-            </div>
-            <div className="use-card" data-animate="fade-up">
-              <h3>Email Marketing</h3>
-              <p>Engage your audience with targeted broadcasts &amp; sequences.</p>
-            </div>
+            {[
+              {
+                title: "Create & Sell Digital Products",
+                desc: "Create an editable first draft for your next digital product and sell it in minutes."
+              },
+              {
+                title: "Drag & Drop \"Link-In-Bio\" Store",
+                desc: "Build, host, and sell any digital product from your link in bio store."
+              },
+              {
+                title: "Media Kits & Campaign Reports",
+                desc: "Stop manually updating stats. Share live media kits with brands."
+              },
+              {
+                title: "Landing Pages & Funnels",
+                desc: "Launch dedicated landing pages and high-converting funnels."
+              },
+              {
+                title: "Customer Analytics & CRM",
+                desc: "Turn followers into customers & manage every relationship."
+              },
+              {
+                title: "Email Marketing",
+                desc: "Engage your audience with targeted broadcasts & sequences."
+              }
+            ].map((item, index) => (
+              <div key={index} className="use-card card-hover-effect" data-animate="fade-up" data-animate-child>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+                <div className="card-glow"></div>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Integrations */}
+        {/* Enhanced Integrations */}
         <section className="integrations" data-animate="fade-up">
-          <h2>Integrates with your favorite apps</h2>
-          <p>Pillar connects to the tools you already use to run your business.</p>
-          <div className="integration-row">
-            <span>Stripe</span>
-            <span>Shopify</span>
-            <span>Notion</span>
-            <span>Google Calendar</span>
-            <span>Zoom</span>
+          <h2 data-animate-child>Integrates with your favorite apps</h2>
+          <p data-animate-child>Urban Desiii connects to the tools you already use to run your business.</p>
+          <div className="integration-row" data-animate-child>
+            {['Stripe', 'Shopify', 'Notion', 'Google Calendar', 'Zoom'].map((item, index) => (
+              <span key={index} className="integration-item" style={{ animationDelay: `${index * 0.1}s` }}>
+                {item}
+              </span>
+            ))}
           </div>
         </section>
 
-        {/* Everything you need */}
+        {/* Enhanced Features */}
         <section className="features" data-animate="fade-up">
-          <h2>Everything you need to run your business</h2>
+          <h2 data-animate-child>Everything you need to run your business</h2>
           <div className="features-grid">
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Calendar</h3>
-              <p>
-                Automate bookings and replace tools like Calendly or Acuity
-                Scheduling.
-              </p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Webinars</h3>
-              <p>Host and sell webinars on Zoom or Google Meet.</p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Funnels</h3>
-              <p>
-                Build high-converting sales funnels with our drag-and-drop
-                builder.
-              </p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Courses</h3>
-              <p>Create, host, and sell online courses with a complete platform.</p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Links</h3>
-              <p>Get more clicks with tiles, carousels, lists, and animations.</p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Media Kits</h3>
-              <p>Get inbound brand deals with a self-updating media kit.</p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Digital Products</h3>
-              <p>Sell e-books, templates, and guides with 1-tap checkout.</p>
-            </div>
-            <div className="feature-item" data-animate="fade-up">
-              <h3>Landing Pages</h3>
-              <p>Create simple, beautiful landing pages in minutes.</p>
-            </div>
+            {[
+              { title: "Calendar", desc: "Automate bookings and replace tools like Calendly or Acuity Scheduling." },
+              { title: "Webinars", desc: "Host and sell webinars on Zoom or Google Meet." },
+              { title: "Funnels", desc: "Build high-converting sales funnels with our drag-and-drop builder." },
+              { title: "Courses", desc: "Create, host, and sell online courses with a complete platform." },
+              { title: "Links", desc: "Get more clicks with tiles, carousels, lists, and animations." },
+              { title: "Media Kits", desc: "Get inbound brand deals with a self-updating media kit." },
+              { title: "Digital Products", desc: "Sell e-books, templates, and guides with 1-tap checkout." },
+              { title: "Landing Pages", desc: "Create simple, beautiful landing pages in minutes." }
+            ].map((item, index) => (
+              <div key={index} className="feature-item feature-hover-effect" data-animate="fade-up" data-animate-child>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+                <div className="feature-number">{String(index + 1).padStart(2, '0')}</div>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Trusted by */}
+        {/* Enhanced Stats */}
         <section className="stats" data-animate="fade-up">
-          <h2 data-animate="fade-up">Trusted by a global community of creators</h2>
+          <h2 data-animate="fade-up" data-animate-child>Trusted by a global community of creators</h2>
           <div className="stats-row">
-            <div data-animate="fade-up">
-              <div className="stat-number">100k+</div>
+            <div data-animate="fade-up" data-animate-child className="stat-item">
+              <div className="stat-number animate-count" data-count="100">100k+</div>
               <div className="stat-label">Creator Stores</div>
             </div>
-            <div data-animate="fade-up">
-              <div className="stat-number">1B+</div>
+            <div data-animate="fade-up" data-animate-child className="stat-item">
+              <div className="stat-number animate-count" data-count="1000">1B+</div>
               <div className="stat-label">Followers of members</div>
             </div>
-            <div data-animate="fade-up">
-              <div className="stat-number">$10M+</div>
+            <div data-animate="fade-up" data-animate-child className="stat-item">
+              <div className="stat-number animate-count" data-count="10">$10M+</div>
               <div className="stat-label">Earned by creators</div>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="cta" data-animate="fade-up">
-          <h2>Ready to get started?</h2>
-          <p>
+        {/* Enhanced CTA */}
+        <section className="cta animate-gradient-shift" data-animate="fade-up">
+          <h2 data-animate-child>Ready to get started?</h2>
+          <p data-animate-child>
             Turn followers into customers &amp; brands into partners with just
             one platform.
           </p>
-          <button className="btn btn-primary">Get started for free</button>
+          <button className="btn btn-primary cta-button" data-animate-child>
+            Get started for free
+            <span className="btn-arrow">→</span>
+          </button>
         </section>
       </main>
 
       <footer className="footer" data-animate="fade-up">
         <div className="footer-top">
-          <div className="footer-brand" data-animate="fade-up">
-            <div className="logo-circle small">P</div>
-            <span className="logo-text">Pillar</span>
+          <div className="footer-brand" data-animate="fade-up" data-animate-child>
+            <div className="logo-container-small">
+              <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image small" />
+              <span className="logo-text">Urban Desiii</span>
+            </div>
           </div>
           <div className="footer-columns">
-            <div className="footer-col" data-animate="fade-up">
-              <h4>Company</h4>
-              <a href="#">Agencies</a>
-              <a href="#">Brands</a>
-              <a href="#">Login</a>
-              <a href="#">Sign up</a>
-              <a href="#">Get Help</a>
-            </div>
-            <div className="footer-col" data-animate="fade-up">
-              <h4>Pillar</h4>
-              <a href="#">For Creators</a>
-              <a href="#">For Talent Managers</a>
-            </div>
-            <div className="footer-col" data-animate="fade-up">
-              <h4>Info</h4>
-              <a href="#">Affiliate Program</a>
-              <a href="#">Free Migration</a>
-            </div>
-            <div className="footer-col" data-animate="fade-up">
-              <h4>Legal</h4>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-            </div>
-            <div className="footer-col" data-animate="fade-up">
-              <h4>Socials</h4>
-              <a href="#">X</a>
-              <a href="#">Instagram</a>
-              <a href="#">Facebook</a>
-              <a href="#">TikTok</a>
-              <a href="#">LinkedIn</a>
-            </div>
+            {[
+              { title: "Company", links: ["Agencies", "Brands", "Login", "Sign up", "Get Help"] },
+              { title: "Urban Desiii", links: ["For Creators", "For Businesses"] },
+              { title: "Info", links: ["Affiliate Program", "Free Migration"] },
+              { title: "Legal", links: ["Privacy Policy", "Terms of Service"] },
+              { title: "Socials", links: ["X", "Instagram", "Facebook", "TikTok", "LinkedIn"] }
+            ].map((col, colIndex) => (
+              <div key={colIndex} className="footer-col" data-animate="fade-up" data-animate-child>
+                <h4>{col.title}</h4>
+                {col.links.map((link, linkIndex) => (
+                  <a key={linkIndex} href="#" className="footer-link">
+                    {link}
+                  </a>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2024 Pillar. All rights reserved.</span>
+          <span>© 2024 Urban Desiii. All rights reserved.</span>
         </div>
       </footer>
     </div>
