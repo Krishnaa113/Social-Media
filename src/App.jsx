@@ -1,10 +1,48 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import './App.css'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('creators') // 'creators' 
+  const [currentPage, setCurrentPage] = useState('creators')
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [heroInView, setHeroInView] = useState(false)
+  const videoRefs = useRef([])
+
+  // Simple video data with placeholder thumbnails
+  const videoData = [
+    {
+      id: 1,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 2,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 3,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 4,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    }
+  ]
+
+  // Handle video hover events
+  const handleVideoHover = (index, isHovering) => {
+    const video = videoRefs.current[index]
+    if (video) {
+      if (isHovering) {
+        video.play().catch(e => console.log('Video play failed:', e))
+      } else {
+        video.pause()
+        video.currentTime = 0
+      }
+    }
+  }
 
   // Enhanced mouse tracking for parallax effects
   const handleMouseMove = useCallback((e) => {
@@ -70,7 +108,7 @@ function App() {
       observer.disconnect()
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [handleMouseMove, currentPage]) // Add currentPage as dependency
+  }, [handleMouseMove, currentPage])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,13 +146,13 @@ function App() {
       <header className="navbar">
         <div className="nav-left">
           <div className="logo-container">
-            <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image" />
+            <img src="/src/assets/Images/white_logoo.png" alt="Urban Desiii Logo" className="logo-image" />
             <span className="logo-text">Urban Desiii</span>
           </div>
         </div>
         <div className="nav-right">
           <button className="nav-link">Home</button>
-          <button className="nav-link">About</button>
+          <button className="nav-link" onClick={() => document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' })}>About</button>
           <button className="nav-link">Service</button>
           <button className="nav-link">Contact</button>
           <button className="nav-link">Subscribe</button>
@@ -161,21 +199,21 @@ function App() {
             <div className="hero-floating hero-floating--top animate-float" data-animate-child style={{ animationDelay: '0.8s' }}>
               <div className="floating-icon">📅</div>
               <div className="floating-text">
-                <div className="floating-title">Coaching</div>
+                <div className="floating-title">Tik-tok</div>
               </div>
             </div>
 
             <div className="hero-floating hero-floating--right animate-float" data-animate-child style={{ animationDelay: '1s' }}>
               <div className="floating-icon">⬇️</div>
               <div className="floating-text">
-                <div className="floating-title">Downloads</div>
+                <div className="floating-title">Instagram</div>
               </div>
             </div>
 
             <div className="hero-floating hero-floating--bottom animate-float" data-animate-child style={{ animationDelay: '1.2s' }}>
               <div className="floating-icon">✉️</div>
               <div className="floating-text">
-                <div className="floating-title">Email Flows</div>
+                <div className="floating-title">Facebook</div>
               </div>
             </div>
 
@@ -190,14 +228,14 @@ function App() {
               <div className="creator-header">
                 <div className="avatar animate-pulse-slow" />
                 <div>
-                  <div className="creator-name">Lucille</div>
-                  <div className="creator-handle">@lucileugc</div>
+                  <div className="creator-name">Urban Desiii</div>
+                  <div className="creator-handle">@urbandesiii</div>
                 </div>
               </div>
               <div className="creator-tags">
-                <span className="tag-item">Coaching</span>
-                <span className="tag-item">Email Flows</span>
-                <span className="tag-item">Downloads</span>
+                <span className="tag-item">Tik-tok</span>
+                <span className="tag-item">Instagram</span>
+                <span className="tag-item">Facebook</span>
               </div>
               <div className="creator-stat-row">
                 <span>Join 100,000+ creators</span>
@@ -207,119 +245,104 @@ function App() {
           </div>
         </section>
 
-        {/* Enhanced Use Urban Desiii for */}
-        <section className="use-pillar" data-animate="fade-up">
-          <h2 data-animate-child>Use Urban Desiii for</h2>
-          <div className="use-grid">
-            {[
-              {
-                title: "Create & Sell Digital Products",
-                desc: "Create an editable first draft for your next digital product and sell it in minutes."
-              },
-              {
-                title: "Drag & Drop \"Link-In-Bio\" Store",
-                desc: "Build, host, and sell any digital product from your link in bio store."
-              },
-              {
-                title: "Media Kits & Campaign Reports",
-                desc: "Stop manually updating stats. Share live media kits with brands."
-              },
-              {
-                title: "Landing Pages & Funnels",
-                desc: "Launch dedicated landing pages and high-converting funnels."
-              },
-              {
-                title: "Customer Analytics & CRM",
-                desc: "Turn followers into customers & manage every relationship."
-              },
-              {
-                title: "Email Marketing",
-                desc: "Engage your audience with targeted broadcasts & sequences."
-              }
-            ].map((item, index) => (
-              <div key={index} className="use-card card-hover-effect" data-animate="fade-up" data-animate-child>
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
-                <div className="card-glow"></div>
+        {/* Simple Video Gallery Section */}
+        <section className="video-gallery" data-animate="fade-up">
+          <div className="video-gallery-header" data-animate-child>
+            <h2>Trending Creator Content</h2>
+          </div>
+          
+          <div className="video-grid" data-animate-child>
+            {videoData.map((video, index) => (
+              <div 
+                key={video.id} 
+                className="video-card"
+                data-animate="fade-up"
+                data-animate-child
+                style={{ animationDelay: `${index * 0.1}s` }}
+                onMouseEnter={() => handleVideoHover(index, true)}
+                onMouseLeave={() => handleVideoHover(index, false)}
+              >
+                <div className="video-container">
+                  <img 
+                    src={video.thumbnail} 
+                    alt={`Video ${video.id}`}
+                    className="video-thumbnail-img"
+                  />
+                  <video
+                    ref={el => videoRefs.current[index] = el}
+                    src={video.videoUrl}
+                    className="video-element"
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Enhanced Integrations */}
-        <section className="integrations" data-animate="fade-up">
-          <h2 data-animate-child>Integrates with your favorite apps</h2>
-          <p data-animate-child>Urban Desiii connects to the tools you already use to run your business.</p>
-          <div className="integration-row" data-animate-child>
-            {['Stripe', 'Shopify', 'Notion', 'Google Calendar', 'Zoom'].map((item, index) => (
-              <span key={index} className="integration-item" style={{ animationDelay: `${index * 0.1}s` }}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Enhanced Features */}
-        <section className="features" data-animate="fade-up">
-          <h2 data-animate-child>Everything you need to run your business</h2>
-          <div className="features-grid">
-            {[
-              { title: "Calendar", desc: "Automate bookings and replace tools like Calendly or Acuity Scheduling." },
-              { title: "Webinars", desc: "Host and sell webinars on Zoom or Google Meet." },
-              { title: "Funnels", desc: "Build high-converting sales funnels with our drag-and-drop builder." },
-              { title: "Courses", desc: "Create, host, and sell online courses with a complete platform." },
-              { title: "Links", desc: "Get more clicks with tiles, carousels, lists, and animations." },
-              { title: "Media Kits", desc: "Get inbound brand deals with a self-updating media kit." },
-              { title: "Digital Products", desc: "Sell e-books, templates, and guides with 1-tap checkout." },
-              { title: "Landing Pages", desc: "Create simple, beautiful landing pages in minutes." }
-            ].map((item, index) => (
-              <div key={index} className="feature-item feature-hover-effect" data-animate="fade-up" data-animate-child>
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
-                <div className="feature-number">{String(index + 1).padStart(2, '0')}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Enhanced Stats */}
-        <section className="stats" data-animate="fade-up">
-          <h2 data-animate="fade-up" data-animate-child>Trusted by a global community of creators</h2>
-          <div className="stats-row">
-            <div data-animate="fade-up" data-animate-child className="stat-item">
-              <div className="stat-number animate-count" data-count="100">100k+</div>
-              <div className="stat-label">Creator Stores</div>
+        {/* About Section */}
+        <section className="about" id="about-section" data-animate="fade-up">
+          <div className="about-content">
+            <div className="about-intro" data-animate-child>
+              <h2>About Urban Desiii</h2>
+              <p className="about-description">
+                Urban Desiii is a social media and marketing agency that specializes in organic growth, and personal branding.
+              </p>
+              <p>
+                We handle everything from managing influencers, to creating content, branding small businesses, and engaging with your niche audience to reach your goals.
+              </p>
+              <p>
+                We keep you up to date on all of the latest South Asian news in Bollywood, and through creators, delivering the hottest trends from clothing brands, to upcoming music artists.
+              </p>
             </div>
-            <div data-animate="fade-up" data-animate-child className="stat-item">
-              <div className="stat-number animate-count" data-count="1000">1B+</div>
-              <div className="stat-label">Followers of members</div>
+
+            <div className="about-actions" data-animate-child>
+              <p>
+                To book a free consultation with us and kickstart your growth through social media, please fill out the <strong className="highlight">"contact us" form</strong>.
+              </p>
+              <p>
+                To enroll in our social media and marketing courses, please fill out the <strong className="highlight">"learn" form</strong>.
+              </p>
             </div>
-            <div data-animate="fade-up" data-animate-child className="stat-item">
-              <div className="stat-number animate-count" data-count="10">$10M+</div>
-              <div className="stat-label">Earned by creators</div>
+          </div>
+
+          <div className="about-stats" data-animate-child>
+            <div className="about-stat-card">
+              <h3>Founded in 2018</h3>
+              <p>Urban Desiii has grown into a team of 10 - based all around the world!</p>
+            </div>
+            <div className="about-stat-card">
+              <h3>Global Team</h3>
+              <p>Our representatives specialize in any, and all audiences - from clothing brands, music artists, influencers/creators, services, and more!</p>
+            </div>
+          </div>
+
+          <div className="about-story" data-animate-child>
+            <div className="story-highlight">
+              <h3>Our Story</h3>
+              <p>
+                Urban Desiii was the first South Asian influencer management agency, that represents creators from a variety of niches.
+              </p>
+              <p>
+                We were inspired to start our agency from the lack of representation that South Asian brands and creators had within the industry.
+              </p>
+              <p>
+                While we have expanded to different demographics, our roots will always highlight South Asian creators and small businesses.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Enhanced CTA */}
-        <section className="cta animate-gradient-shift" data-animate="fade-up">
-          <h2 data-animate-child>Ready to get started?</h2>
-          <p data-animate-child>
-            Turn followers into customers &amp; brands into partners with just
-            one platform.
-          </p>
-          <button className="btn btn-primary cta-button" data-animate-child>
-            Get started for free
-            <span className="btn-arrow">→</span>
-          </button>
-        </section>
+       
       </main>
 
       <footer className="footer" data-animate="fade-up">
         <div className="footer-top">
           <div className="footer-brand" data-animate="fade-up" data-animate-child>
             <div className="logo-container-small">
-              <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image small" />
+              <img src="/src/assets/Images/white_logoo.png" alt="Urban Desiii Logo" className="logo-image small" />
               <span className="logo-text">Urban Desiii</span>
             </div>
           </div>
