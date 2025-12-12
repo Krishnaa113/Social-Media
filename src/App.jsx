@@ -1,14 +1,53 @@
-import { useEffect, useState, useCallback } from 'react'
-import HomePage from './pages/Home'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import ContactPage from './pages/Contact'
 import SubscribePage from './pages/Subscribe'
 import SignInPage from './pages/SignIn'
+import AboutPage from './pages/About'
 import './App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [heroInView, setHeroInView] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const videoRefs = useRef([])
+
+  // Simple video data with placeholder thumbnails
+  const videoData = [
+    {
+      id: 1,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 2,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 3,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    },
+    {
+      id: 4,
+      videoUrl: "/src/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
+      thumbnail: "/src/assets/Images/2.png"
+    }
+  ]
+
+  // Handle video hover events
+  const handleVideoHover = (index, isHovering) => {
+    const video = videoRefs.current[index]
+    if (video) {
+      if (isHovering) {
+        video.play().catch(e => console.log('Video play failed:', e))
+      } else {
+        video.pause()
+        video.currentTime = 0
+      }
+    }
+  }
 
   // Enhanced mouse tracking for parallax effects
   const handleMouseMove = useCallback((e) => {
@@ -74,7 +113,7 @@ function App() {
       observer.disconnect()
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [handleMouseMove, currentPage]) // Add currentPage as dependency
+  }, [handleMouseMove, currentPage])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -87,7 +126,8 @@ function App() {
         const scrollPercent = window.scrollY / window.innerHeight
         
         if (heroDiamond) {
-          heroDiamond.style.transform = `rotate(45deg) translateY(${scrollPercent * 30}px)`
+          const base = 'translate(-50%, -50%)'
+          heroDiamond.style.transform = `${base} rotate(45deg) translateY(${scrollPercent * 30}px)`
         }
         
         heroFloating.forEach((floating, index) => {
@@ -101,59 +141,261 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Dynamic hero diamond style based on mouse position
+  const heroBaseTransform = 'translate(-50%, -50%)'
+  const heroDiamondStyle = {
+    transform: `${heroBaseTransform} rotate(45deg) translateY(${(mousePosition.y - 50) * 0.1}px) translateX(${(mousePosition.x - 50) * 0.05}px)`,
+    transformOrigin: 'center',
+    filter: `brightness(${100 + mousePosition.x * 0.2}%)`
+  }
+
+  // Function to scroll to specific section
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    setCurrentPage('home')
+  }
+
   return (
-    <div key="creators" className="page">
-      <header className="navbar">
-        <div className="nav-left">
-          <div className="logo-container">
-            <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image" />
-            <span className="logo-text">Urban Desiii</span>
-          </div>
-        </div>
-        <div className="nav-right">
-          <button className="nav-link" onClick={() => setCurrentPage('home')}>Home</button>
-          <button className="nav-link" onClick={() => setCurrentPage('home')}>About</button>
-          <button className="nav-link" onClick={() => setCurrentPage('home')}>Service</button>
-          <button className="nav-link" onClick={() => setCurrentPage('contact')}>Contact</button>
-          <button className="nav-link" onClick={() => setCurrentPage('subscribe')}>Subscribe</button>
-          <button className="btn btn-primary" onClick={() => setCurrentPage('signin')}>Sign In</button>
-        </div>
-      </header>
-
-      {currentPage === 'contact' ? <ContactPage /> : currentPage === 'subscribe' ? <SubscribePage /> : currentPage === 'signin' ? <SignInPage /> : <HomePage />}
-
-      <footer className="footer" data-animate="fade-up">
-        <div className="footer-top">
-          <div className="footer-brand" data-animate="fade-up" data-animate-child>
-            <div className="logo-container-small">
-              <img src="/src/assets/Images/logo.png" alt="Urban Desiii Logo" className="logo-image small" />
+    <>
+      <div className="page">
+        <header className="navbar">
+          <div className="nav-left">
+            <div className="logo-container">
+              <img src="/src/assets/Images/white_logoo.png" alt="Urban Desiii Logo" className="logo-image" />
               <span className="logo-text">Urban Desiii</span>
             </div>
           </div>
-          <div className="footer-columns">
-            {[
-              { title: "Company", links: ["Agencies", "Brands", "Login", "Sign up", "Get Help"] },
-              { title: "Urban Desiii", links: ["For Creators", "For Businesses"] },
-              { title: "Info", links: ["Affiliate Program", "Free Migration"] },
-              { title: "Legal", links: ["Privacy Policy", "Terms of Service"] },
-              { title: "Socials", links: ["X", "Instagram", "Facebook", "TikTok", "LinkedIn"] }
-            ].map((col, colIndex) => (
-              <div key={colIndex} className="footer-col" data-animate="fade-up" data-animate-child>
-                <h4>{col.title}</h4>
-                {col.links.map((link, linkIndex) => (
-                  <a key={linkIndex} href="#" className="footer-link">
-                    {link}
-                  </a>
+          <button 
+            className="mobile-menu-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span className={mobileMenuOpen ? 'hamburger open' : 'hamburger'}></span>
+            <span className={mobileMenuOpen ? 'hamburger open' : 'hamburger'}></span>
+            <span className={mobileMenuOpen ? 'hamburger open' : 'hamburger'}></span>
+          </button>
+          {mobileMenuOpen && (
+            <div 
+              className="mobile-menu-backdrop" 
+              onClick={() => setMobileMenuOpen(false)}
+            ></div>
+          )}
+          <div className={`nav-right ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+            <button className="nav-link" onClick={() => { scrollToSection(''); setMobileMenuOpen(false); }}>Home</button>
+            <button className="nav-link" onClick={() => { setCurrentPage('about'); setMobileMenuOpen(false); }}>About</button>
+            <button className="nav-link" onClick={() => { scrollToSection(''); setMobileMenuOpen(false); }}>Service</button>
+            <button className="nav-link" onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }}>Contact</button>
+            <button className="nav-link" onClick={() => { setCurrentPage('subscribe'); setMobileMenuOpen(false); }}>Subscribe</button>
+          </div>
+        </header>
+
+        {currentPage === 'contact' ? <ContactPage /> : 
+         currentPage === 'subscribe' ? <SubscribePage /> : 
+         currentPage === 'about' ? <AboutPage /> :
+         currentPage === 'signin' ? <SignInPage /> : 
+         (
+          <main>
+            {/* Enhanced Hero */}
+            <section className="hero" data-animate="fade-up">
+              <div className="hero-content">
+                <p className="hero-kicker" data-animate-child>All in one Creator Store</p>
+                <h1 data-animate-child>
+                  <span className="hero-text-reveal">All in one</span>
+                  <br />
+                  <span className="hero-text-reveal" style={{ animationDelay: '0.2s' }}>Creator Store</span>
+                </h1>
+                <p className="hero-sub" data-animate-child>
+                  Turn followers into customers &amp; brands into partners with just one
+                  platform.
+                </p>
+                <div className="hero-actions" data-animate-child>
+                  <button className="btn btn-primary hero-cta animate-bounce-in" onClick={() => setCurrentPage('subscribe')}>
+                    Get Started Now
+                    <span className="btn-shine"></span>
+                  </button>
+                </div>
+                <div className="hero-logos-block" data-animate-child>
+                  <p className="hero-trust-label">
+                    OVER 100,000 CREATORS &amp; COACHES RUN THEIR BUSINESSES ON Urban Desiii
+                  </p>
+                  <div className="hero-logos">
+                    <span className="logo-item">Business Insider</span>
+                    <span className="logo-item">TechCrunch</span>
+                    <span className="logo-item">Forbes</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hero-visual" data-animate="fade-left">
+                {/* Gray diamond shape */}
+                <div className="hero-diamond-gray" data-animate-child />
+
+                <div className="hero-floating hero-floating--top animate-float" data-animate-child style={{ animationDelay: '0.8s' }}>
+                  <div className="floating-icon">📅</div>
+                  <div className="floating-text">
+                    <div className="floating-title">Tik-tok</div>
+                  </div>
+                </div>
+
+                <div className="hero-floating hero-floating--right animate-float" data-animate-child style={{ animationDelay: '1s' }}>
+                  <div className="floating-icon">⬇️</div>
+                  <div className="floating-text">
+                    <div className="floating-title">Instagram</div>
+                  </div>
+                </div>
+
+                <div className="hero-floating hero-floating--bottom animate-float" data-animate-child style={{ animationDelay: '1.2s' }}>
+                  <div className="floating-icon">✉️</div>
+                  <div className="floating-text">
+                    <div className="floating-title">Facebook</div>
+                  </div>
+                </div>
+
+                <div className="hero-card animate-card-hover hero-card-delayed" data-animate-child style={{ animationDelay: '1.5s' }}>
+                  <div className="hero-card-image">
+                    <img 
+                      src="/src/assets/Images/@urbandesiii.png" 
+                      alt="Urban Desiii Profile" 
+                      className="hero-card-profile-image"
+                    />
+                  </div>
+                  <div className="creator-header">
+                    <div className="avatar animate-pulse-slow" />
+                    <div>
+                      <div className="creator-name">Urban Desiii</div>
+                      <div className="creator-handle">@urbandesiii</div>
+                    </div>
+                  </div>
+                  <div className="creator-tags">
+                    <span className="tag-item">Tik-tok</span>
+                    <span className="tag-item">Instagram</span>
+                    <span className="tag-item">Facebook</span>
+                  </div>
+                  <div className="creator-stat-row">
+                    <span>Join 100,000+ creators</span>
+                    <span className="creator-pill animate-typing">urbandesiii.com/creators/mediakit</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Simple Video Gallery Section */}
+            <section className="video-gallery" data-animate="fade-up">
+              <div className="video-gallery-header" data-animate-child>
+                <h2>Trending Creator Content</h2>
+              </div>
+              
+              <div className="video-grid" data-animate-child>
+                {videoData.map((video, index) => (
+                  <div 
+                    key={video.id} 
+                    className="video-card"
+                    data-animate="fade-up"
+                    data-animate-child
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                    onMouseEnter={() => handleVideoHover(index, true)}
+                    onMouseLeave={() => handleVideoHover(index, false)}
+                  >
+                    <div className="video-container">
+                      <img 
+                        src={video.thumbnail} 
+                        alt={`Video ${video.id}`}
+                        className="video-thumbnail-img"
+                      />
+                      <video
+                        ref={el => videoRefs.current[index] = el}
+                        src={video.videoUrl}
+                        className="video-element"
+                        muted
+                        loop
+                        playsInline
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
-            ))}
+            </section>
+          </main>
+        )}
+      </div>
+      
+      {/* Footer moved outside the .page container */}
+      <footer className="footer" data-animate="fade-up">
+        <div className="footer-content">
+          <div className="footer-top">
+            <div className="footer-brand" data-animate="fade-up" data-animate-child>
+              <div className="logo-container-small">
+                <img src="/src/assets/Images/white_logoo.png" alt="Urban Desiii Logo" className="logo-image small" />
+                <span className="logo-text">Urban Desiii</span>
+              </div>
+            </div>
+            <div className="footer-columns">
+              {[
+                { 
+                  title: "Quick Links", 
+                  links: [
+                    { name: "Home", action: () => scrollToSection('') },
+                    { name: "About", action: () => setCurrentPage('about') },
+                    { name: "Services", action: () => scrollToSection('') },
+                    { name: "Contact", action: () => setCurrentPage('contact') },
+                    { name: "Subscribe", action: () => setCurrentPage('subscribe') }
+                  ]
+                },
+                { title: "Resources", links: ["Blog", "FAQ", "Tutorials", "Case Studies", "Documentation"] },
+                { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy", "Disclaimer"] },
+                { title: "Connect", links: ["Instagram", "TikTok", "Twitter", "LinkedIn", "YouTube"] },
+                { 
+                  title: "Support", 
+                  links: [
+                    { name: "Help Center", action: () => {} },
+                    { name: "Contact Us", action: () => setCurrentPage('contact') },
+                    { name: "Report Issue", action: () => {} },
+                    { name: "Feedback", action: () => {} },
+                    { name: "Status", action: () => {} }
+                  ]
+                }
+              ].map((col, colIndex) => (
+                <div 
+                  key={colIndex} 
+                  className={`footer-col ${col.title === "Quick Links" ? "footer-col-quick" : ""} ${col.title === "Support" ? "footer-col-support" : ""}`} 
+                  data-animate="fade-up" 
+                  data-animate-child
+                >
+                  <h4>{col.title}</h4>
+                  {col.links.map((link, linkIndex) => {
+                    if (typeof link === 'object' && link.action) {
+                      return (
+                        <button 
+                          key={linkIndex} 
+                          onClick={link.action}
+                          className="footer-link"
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'center', width: '100%', padding: 0 }}
+                        >
+                          {link.name}
+                        </button>
+                      )
+                    }
+                    return (
+                      <a key={linkIndex} href="#" className="footer-link" onClick={(e) => e.preventDefault()}>
+                        {link}
+                      </a>
+                    )
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <span>© {new Date().getFullYear()} Urban Desiii. All rights reserved.</span>
           </div>
         </div>
-        <div className="footer-bottom">
-          <span>© 2024 Urban Desiii. All rights reserved.</span>
-        </div>
       </footer>
-    </div>
+    </>
   )
 }
 
