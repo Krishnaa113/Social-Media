@@ -36,19 +36,6 @@ function App() {
     }
   ]
 
-  // Handle video hover events
-  const handleVideoHover = (index, isHovering) => {
-    const video = videoRefs.current[index]
-    if (video) {
-      if (isHovering) {
-        video.play().catch(e => console.log('Video play failed:', e))
-      } else {
-        video.pause()
-        video.currentTime = 0
-      }
-    }
-  }
-
   // Enhanced mouse tracking for parallax effects
   const handleMouseMove = useCallback((e) => {
     setMousePosition({
@@ -298,23 +285,19 @@ function App() {
                     data-animate="fade-up"
                     data-animate-child
                     style={{ animationDelay: `${index * 0.1}s` }}
-                    onMouseEnter={() => handleVideoHover(index, true)}
-                    onMouseLeave={() => handleVideoHover(index, false)}
                   >
                     <div className="video-container">
-                      <img 
-                        src={video.thumbnail} 
-                        alt={`Video ${video.id}`}
-                        className="video-thumbnail-img"
-                      />
                       <video
                         ref={el => videoRefs.current[index] = el}
                         src={video.videoUrl}
                         className="video-element"
+                        autoPlay
                         muted
                         loop
                         playsInline
+                        poster={video.thumbnail}
                       />
+
                     </div>
                   </div>
                 ))}
