@@ -1,7 +1,20 @@
 .page {
   min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   color: #ffffff;
-  background: linear-gradient(180deg, #0a0a0a 0%, #000000 50%, #0a0a0a 100%);
+  background: #000000;
+  overflow-x: hidden;
+}
+
+/* Ensure all direct children of page respect full width */
+.page > * {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Enhanced Animation System */
@@ -829,16 +842,86 @@ main {
   left: 35%;
 }
 
+/* Default size for all floating icons */
 .floating-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+/* Instagram and LinkedIn icons - Compact */
+.hero-floating--right .floating-icon,
+.hero-floating--bottom .floating-icon {
+  width: 24px;  /* Reduced width */
+  height: 32px; /* Kept height the same */
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  transition: all 0.2s ease-out;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make the images inside Instagram and LinkedIn icons */
+.hero-floating--right .floating-icon img,
+.hero-floating--bottom .floating-icon img {
+  width: auto;
+  height: 90%;
+  max-width: none; /* Allow image to overflow container */
+  object-fit: contain;
+  transform: scale(1.8);
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Hover effect for the icons */
+.hero-floating--right .floating-icon:hover,
+.hero-floating--bottom .floating-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect for the images */
+.hero-floating--right .floating-icon:hover img,
+.hero-floating--bottom .floating-icon:hover img {
+  transform: scale(2.5);
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
+}
+
+/* Adjust the floating text position */
+.hero-floating--right .floating-text,
+.hero-floating--bottom .floating-text {
+  margin-left: 10px;
+}
+
+/* Hover effect for all floating icons */
+.floating-icon:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.floating-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 .floating-title {
@@ -1408,7 +1491,7 @@ main {
 
 @media (max-width: 768px) {
   #root {
-    padding-inline: 1rem;
+    padding-inline: 0;
   }
 
   .navbar {
@@ -2766,7 +2849,7 @@ main {
 
 @media (max-width: 768px) {
   #root {
-    padding-inline: 1rem;
+    padding-inline: 0;
   }
 
   .contact-page {

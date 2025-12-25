@@ -17,22 +17,22 @@ function App() {
     {
       id: 1,
       videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      thumbnail: "/assets/Images/2.png"
+    
     },
     {
       id: 2,
       videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      thumbnail: "/assets/Images/2.png"
+      
     },
     {
       id: 3,
       videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      thumbnail: "/assets/Images/2.png"
+     
     },
     {
       id: 4,
       videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      thumbnail: "/assets/Images/2.png"
+      
     }
   ]
 
@@ -220,27 +220,31 @@ function App() {
               <div className="hero-visual" data-animate="fade-left">
                 {/* Gray diamond shape */}
                 <div className="hero-diamond-gray" data-animate-child />
-
+              <a href='https://www.tiktok.com/@urbandesiii' target="_blank" rel="noopener noreferrer">
                 <div className="hero-floating hero-floating--top animate-float" data-animate-child style={{ animationDelay: '0.8s' }}>
-                  <div className="floating-icon">📅</div>
+                  <div className="floating-icon"><img src='/assets/Images/tiktok-256.png' alt="tiktok"/></div>
                   <div className="floating-text">
                     <div className="floating-title">Tik-tok</div>
                   </div>
                 </div>
-
-               <a href='https://www.instagram.com/urbandesiii/?hl=en'><div className="hero-floating hero-floating--right animate-float" data-animate-child style={{ animationDelay: '1s' }}>
-                  <div className="floating-icon">⬇️</div>
+              </a>
+               <a href='https://www.instagram.com/urbandesiii/?hl=en' className="hero-floating hero-floating--right animate-float" data-animate-child style={{ animationDelay: '1s', textDecoration: 'none' }}>
+                  <div className="floating-icon">
+                    <img src='/assets/Images/instagram.png' alt='Instagram'/>
+                  </div>
                   <div className="floating-text">
                     <div className="floating-title">Instagram</div>
                   </div>
-                </div></a>
+                </a>
 
-                <div className="hero-floating hero-floating--bottom animate-float" data-animate-child style={{ animationDelay: '1.2s' }}>
-                  <div className="floating-icon">✉️</div>
-                  <div className="floating-text">
-                    <div className="floating-title">Facebook</div>
+                <a href='https://www.linkedin.com/company/urban-desiii/' className="hero-floating hero-floating--bottom animate-float" data-animate-child style={{ animationDelay: '1.2s', textDecoration: 'none' }}>
+                  <div className="floating-icon">
+                    <img src='/assets/Images/linkedin.png' alt='LinkedIn'/>
                   </div>
-                </div>
+                  <div className="floating-text">
+                    <div className="floating-title">LinkedIn</div>
+                  </div>
+                </a>
 
                 <div className="hero-card animate-card-hover hero-card-delayed" data-animate-child style={{ animationDelay: '1.5s' }}>
                   <div className="hero-card-image">
@@ -251,20 +255,19 @@ function App() {
                     />
                   </div>
                   <div className="creator-header">
-                    <div className="avatar animate-pulse-slow" />
                     <div>
                       <div className="creator-name">Urban Desiii</div>
                       <div className="creator-handle">@urbandesiii</div>
                     </div>
                   </div>
                   <div className="creator-tags">
-                    <span className="tag-item">Tik-tok</span>
-                    <span className="tag-item">Instagram</span>
-                    <span className="tag-item">Facebook</span>
+                    <a href='https://www.tiktok.com/@urbandesiii'><span className="tag-item">Tik-tok</span></a>
+                    <a href='https://www.instagram.com/urbandesiii/?hl=en'><span className="tag-item">Instagram</span></a>
+                    <a href='https://www.linkedin.com/company/urban-desiii/'><span className="tag-item">LinkedIn</span></a>
                   </div>
                   <div className="creator-stat-row">
-                    <span>Join 100,000+ creators</span>
-                    <span className="creator-pill animate-typing">urbandesiii.com/creators/mediakit</span>
+                    <span>Join To Grow As a Creator</span>
+                    <span className="creator-pill animate-typing">urbandesiii.com/creators/growingplatform</span>
                   </div>
                 </div>
               </div>
@@ -294,7 +297,7 @@ function App() {
                         muted
                         loop
                         playsInline
-                        poster={video.thumbnail}
+                        // poster={video.thumbnail}
                       />
 
                     </div>
@@ -323,14 +326,23 @@ function App() {
                   links: [
                     { name: "Home", action: () => scrollToSection('') },
                     { name: "About", action: () => setCurrentPage('about') },
-                    { name: "Services", action: () => scrollToSection('service') },
+                    { name: "Services", action: () => setCurrentPage('service') },
                     { name: "Contact", action: () => setCurrentPage('contact') },
                     { name: "Subscribe", action: () => setCurrentPage('subscribe') }
                   ]
                 },
                 { title: "Resources", links: ["Blog", "FAQ", "Tutorials", "Case Studies", "Documentation"] },
                 { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy", "Disclaimer"] },
-                { title: "Connect", links: ["Instagram", "TikTok", "Twitter","Email", "YouTube"] },
+                { 
+                  title: "Connect", 
+                  links: [
+                    { name: "Instagram", url: "https://www.instagram.com/urbandesiii/" },
+                    { name: "TikTok", url: "https://www.tiktok.com/" },
+                    { name: "LinkedIn", url: "https://www.linkedin.com/company/urban-desiii/" },
+                    { name: "Email", url: "mailto:urbandesiii.business@gmail.com" },
+                    { name: "YouTube", url: "https://www.youtube.com/@ashnaparikh" }
+                  ]
+                },
                 { 
                   title: "Support", 
                   links: [
@@ -350,7 +362,25 @@ function App() {
                 >
                   <h4>{col.title}</h4>
                   {col.links.map((link, linkIndex) => {
-                    if (typeof link === 'object' && link.action) {
+                    if (typeof link === 'string') {
+                      return (
+                        <a key={linkIndex} href="#" className="footer-link" onClick={(e) => e.preventDefault()}>
+                          {link}
+                        </a>
+                      )
+                    } else if (link.url) {
+                      return (
+                        <a 
+                          key={linkIndex} 
+                          href={link.url} 
+                          className="footer-link" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          {link.name}
+                        </a>
+                      )
+                    } else if (link.action) {
                       return (
                         <button 
                           key={linkIndex} 
@@ -362,17 +392,13 @@ function App() {
                         </button>
                       )
                     }
-                    return (
-                      <a key={linkIndex} href="#" className="footer-link" onClick={(e) => e.preventDefault()}>
-                        {link}
-                      </a>
-                    )
                   })}
                 </div>
               ))}
             </div>
           </div>
           <div className="footer-bottom">
+            <span> 2023 Urban Desiii. All rights reserved.</span>
             <span>© {new Date().getFullYear()} Urban Desiii. All rights reserved.</span>
           </div>
         </div>
