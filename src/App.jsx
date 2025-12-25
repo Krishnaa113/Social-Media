@@ -16,23 +16,19 @@ function App() {
   const videoData = [
     {
       id: 1,
-      videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-    
+      videoUrl: "/assets/Images/hero-video.mp4"
     },
     {
       id: 2,
-      videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      
+      videoUrl: "/assets/Images/hero-video.mp4"
     },
     {
       id: 3,
-      videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-     
+      videoUrl: "/assets/Images/hero-video.mp4"
     },
     {
       id: 4,
-      videoUrl: "/assets/Images/Balancing work, editing, posting, and community building is hard… let us make it easy ;) The @ur.mp4",
-      
+      videoUrl: "/assets/Images/hero-video.mp4"
     }
   ]
 
