@@ -427,15 +427,29 @@
 .logo-container-small {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.4rem 0.8rem;
+  gap: 1rem;  /* Increased from 0.75rem */
   border-radius: 12px;
+  margin-bottom: 0.5rem;  /* Added some space below the logo */
+}
+
+.logo-image.small {
+  height: 40px;  /* Increased from default */
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-image.small:hover {
+  transform: scale(1.05);  /* Subtle hover effect */
 }
 
 .logo-text {
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: 0.02em;
+  font-weight: 800;  /* Made bolder */
+  font-size: 1.6rem;  /* Increased from 1.1rem */
+  letter-spacing: 0.03em;  /* Slightly more letter spacing */
+  background: linear-gradient(90deg, #fff, #e0e0e0);  /* Subtle gradient effect */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -585,10 +599,10 @@ main {
 }
 
 .hero h1 {
-  font-size: clamp(3rem, 6vw, 4.5rem);
-  line-height: 1.1;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.2;
   letter-spacing: -0.02em;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.2rem;
   color: #ffffff;
   font-weight: 800;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -685,6 +699,29 @@ main {
 }
 
 /* Premium Hero Gray Diamond */
+/* Instagram Live Feed in Diamond */
+.instagram-live-diamond {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.instagram-live-feed {
+  transform: rotate(70deg);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .hero-diamond-gray {
   width: 300px;
   height: 400px;
@@ -710,11 +747,12 @@ main {
 /* Hero Card with Image - Fixed positioning and twitching */
 .hero-card {
   position: absolute;
-  left: 50%;
+  left: 50%;  /* Shifted more left from 55% */
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 235px;
-  border-radius: 24px;
+  width: 250px;
+  height: 350px;
+  border-radius: 48px;
   overflow: hidden;
   background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
   box-shadow: 
@@ -748,7 +786,7 @@ main {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 32px;  /* Match the hero card border-radius */
   position: absolute;
   top: 0;     
   left: 0;
@@ -758,24 +796,25 @@ main {
 .hero-card-image::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -100px;  /* Extended upward to cover more area */
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, transparent 30%, rgba(0, 0, 0, 0.3) 100%);
   z-index: 2;
 }
 
 .hero-card-profile-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;  /* Changed to contain to show full image */
   transition: all 0.4s ease;
   filter: contrast(1.1) brightness(0.9);
+  transform: scale(1) translateY(0px);  /* Removed shift to show full image */
 }
 
 .hero-card-profile-image:hover {
-  transform: scale(1.05);
+  transform: scale(1.15);  /* Increased hover scale for more dramatic effect */
   filter: contrast(1.2) brightness(1);
 }
 
@@ -783,14 +822,19 @@ main {
 .hero-card .creator-tags,
 .hero-card .creator-stat-row {
   padding: 0 1.8rem;
-  position: relative;  /* ← ADD THIS: Above the image */
-  z-index: 2;         /* ← ADD THIS: On top of image */
+  position: relative;  /* Above the image */
+  z-index: 10;         /* On top of image */
   color: white;  
 }
 
 .hero-card .creator-header {
-  padding-top: 1.5rem;
-  margin-bottom: 1.2rem;
+  position: absolute;
+  top: 60px;  /* Shifted down from 0 */
+  left: 0;
+  right: 0;
+  padding: 1.5rem 1.8rem 2rem;  /* Reduced padding */
+  background: none;  /* Removed gradient */
+  z-index: 15;
 }
 
 .hero-card .creator-tags {
@@ -833,8 +877,14 @@ main {
 }
 
 .hero-floating--right {
-  right: 10%;
+  right: 8%;  /* Increased from 10% to 5% to move it further right */
   top: 20%;
+}
+
+.hero-floating--left {
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .hero-floating--bottom {
@@ -857,8 +907,9 @@ main {
   transition: all 0.2s ease;
 }
 
-/* Instagram and LinkedIn icons - Compact */
+/* Social media icons - Compact */
 .hero-floating--right .floating-icon,
+.hero-floating--left .floating-icon,
 .hero-floating--bottom .floating-icon {
   width: 24px;  /* Reduced width */
   height: 32px; /* Kept height the same */
@@ -875,22 +926,45 @@ main {
   justify-content: center;
 }
 
-/* Make the images inside Instagram and LinkedIn icons */
+/* Make the images inside social media icons */
 .hero-floating--right .floating-icon img,
+.hero-floating--left .floating-icon img,
 .hero-floating--bottom .floating-icon img {
   width: auto;
   height: 90%;
   max-width: none; /* Allow image to overflow container */
   object-fit: contain;
-  transform: scale(1.8);
   transition: transform 0.2s ease-out;
   will-change: transform;
   pointer-events: none;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
+/* Default transform for all social icons */
+.hero-floating--right .floating-icon img,
+.hero-floating--bottom .floating-icon img {
+  transform: scale(1.8);
+}
+
+/* Specific size for TikTok icon */
+.hero-floating--left .floating-icon img[alt="tiktok"] {
+  transform: scale(1.2); /* Smaller size for TikTok */
+  height: 80%; /* Slightly smaller height */
+}
+
+/* Hover effects */
+.hero-floating--right .floating-icon:hover img,
+.hero-floating--bottom .floating-icon:hover img {
+  transform: scale(2.2);
+}
+
+.hero-floating--left .floating-icon:hover img[alt="tiktok"] {
+  transform: scale(1.5); /* Less scale on hover for TikTok */
+}
+
 /* Hover effect for the icons */
 .hero-floating--right .floating-icon:hover,
+.hero-floating--left .floating-icon:hover,
 .hero-floating--bottom .floating-icon:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -898,6 +972,7 @@ main {
 
 /* Hover effect for the images */
 .hero-floating--right .floating-icon:hover img,
+.hero-floating--left .floating-icon:hover img,
 .hero-floating--bottom .floating-icon:hover img {
   transform: scale(2.5);
   filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
@@ -905,6 +980,7 @@ main {
 
 /* Adjust the floating text position */
 .hero-floating--right .floating-text,
+.hero-floating--left .floating-text,
 .hero-floating--bottom .floating-text {
   margin-left: 10px;
 }
@@ -947,13 +1023,13 @@ main {
 
 .creator-name {
   font-weight: 700;
-  color: #ffffff;
-  font-size: 1rem;
+  color: white;
+  font-size: 1rem;  /* Reduced from 1.5rem */
 }
 
 .creator-handle {
-  font-size: 0.85rem;
-  color: #a0a0a0;
+  font-size: 1.5rem;  /* Reduced from 1.8rem */
+  color: #ffffff;  /* Ensured white color */
   margin-top: 0.2rem;
 }
 
@@ -1002,9 +1078,9 @@ main {
 
 /* About Section */
 .about {
-  margin-bottom: 6rem;
-  padding: 1rem 0;
-  min-height: 80vh;
+  margin-bottom: 2rem;
+  padding: 0;
+  min-height: auto;
   background: transparent;
   border-radius: 0;
   border: none;
@@ -1022,15 +1098,15 @@ main {
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
-  margin-bottom: 5rem;
-  padding: 3rem 0;
+  margin: 0;
+  padding: 0;
 }
 
 .about-intro h2 {
-  font-size: clamp(3.5rem, 7vw, 5rem);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   color: #ffffff;
   font-weight: 800;
-  margin-bottom: 2.5rem;
+  margin: 0.5rem 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
   -webkit-background-clip: text;
@@ -1285,44 +1361,336 @@ main {
 
 .footer-top {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 4rem;
+  flex-wrap: wrap;
+  gap: 3rem;
   margin-bottom: 3rem;
-  width: 100%;
+  justify-content: space-between;
+}
+
+.footer-brand-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin-right: 5%;
+  padding-right: 3rem;
+  position: relative;
+  left: 5%;
 }
 
 .footer-brand {
-  flex: 0 0 auto;
-  min-width: 220px;
   display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.footer-brand .logo-text {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: 0.5px;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .footer-columns {
   display: flex;
+  width: auto;
+  justify-content: flex-end;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 3rem;
-  justify-content: space-between;
   flex: 1;
 }
 
 .footer-col {
-  flex: 1;
-  min-width: 150px;
-  max-width: 200px;
-  text-align: center;
+  flex: 0 0 auto;
+  text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Brand column */
+.footer-brand-col {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Follow column */
+.footer-col:last-child {
+  text-align: right;
+  align-items: flex-end;
+  margin-left: 0;
+  padding-left: 3rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  left: -5%;
+}
+
+/* Email Signup Section */
+.email-signup {
+  width: 130%;  /* Increased from 120% */
+  max-width: 700px;  /* Increased from 600px */
+  margin: 0;
+  padding: 2.5rem;  /* Increased padding */
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-aileron);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  left: 0;  /* Removed negative left position */
+}
+
+/* Email Signup Responsive Styles */
+@media (max-width: 1024px) {
+  .email-signup {
+    width: 100%;
+    max-width: 100%;
+    padding: 2rem;
+    left: 0;
+  }
+  
+  .footer-brand-container {
+    left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .email-signup {
+    width: 100%;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .signup-text {
+    font-size: 1.1rem;
+  }
+  
+  .signup-subtext {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  
+  .signup-form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .email-input {
+    width: 100%;
+  }
+  
+  .signup-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .email-signup {
+    padding: 1rem;
+  }
+  
+  .signup-text {
+    font-size: 1rem;
+  }
+  
+  .signup-subtext {
+    font-size: 0.8rem;
+  }
+  
+  .email-input,
+  .signup-button {
+    font-size: 0.9rem;
+  }
+  
+  .privacy-text {
+    font-size: 0.7rem;
+  }
+}
+
+.email-signup:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.signup-text {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-aileron);
+  letter-spacing: 0.3px;
+  position: relative;
+  display: inline-block;
+}
+
+.signup-text::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.3));
+  border-radius: 3px;
+}
+
+.signup-subtext {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-family: var(--font-aileron);
+  max-width: 90%;
+}
+
+.signup-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.email-input {
+  flex: 1;
+  padding: 0.85rem 1.25rem;
+  border: 2px solid #ffffff;
+  background: transparent;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.email-input:focus {
+  outline: none;
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.email-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-aileron);
+  transition: color 0.3s ease;
+}
+
+.email-input:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.email-input:focus::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.signup-button {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 0.7rem 2rem;  /* Increased top/bottom padding */
+  border-radius: 8px;
+  font-weight: 600;  /* Reduced from 700 to 600 */
+  font-family: var(--font-aileron);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  line-height: 1.2;  /* Added for better vertical centering */
+}
+
+.signup-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.signup-button:hover::before {
+  left: 100%;
+}
+
+.signup-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.signup-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.privacy-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  margin-top: 1rem;
+  font-family: var(--font-aileron);
+  display: flex;
   align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.privacy-text::before {
+  content: '🔒';
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.privacy-text:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Social links row */
+.social-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-links a {
+  color: #ffffff;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Ensure icons are visible */
+.social-links i {
+  font-size: 1.2rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-col h4 {
@@ -3345,6 +3713,36 @@ main {
     padding: 0 1rem;
   }
   
+  .hero-card {
+    width: 100%;  /* Increased from 95% */
+    height: 450px;  /* Increased from 400px */
+    left: 50%;
+    border-radius: 32px;  /* Increased from 24px for rounder corners */
+  }
+  
+  .hero-card-profile-image {
+    object-fit: cover !important;  /* Force cover in mobile */
+  }
+  
+  .hero-card .creator-header {
+    top: 30px;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);  /* Added background for visibility */
+    z-index: 20;
+  }
+  
+  .creator-name {
+    font-size: 1.4rem;  /* Increased from 1.2rem */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);  /* Added text shadow for better visibility */
+  }
+  
+  .creator-handle {
+    font-size: 1.6rem;  /* Increased from 1.4rem */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);  /* Added text shadow for better visibility */
+  }
+  
   .hero-content {
     text-align: center;
     max-width: 100%;
@@ -3464,6 +3862,35 @@ main {
     margin: 1rem 0 1.5rem;
     gap: 1.5rem;
     padding: 0 0.75rem;
+  }
+  
+  .hero-card {
+    width: 98%;  /* Increased from 95% */
+    height: 400px;  /* Increased from 350px */
+    left: 50%;
+  }
+  
+  .hero-card-profile-image {
+    object-fit: cover !important;  /* Force cover in small mobile */
+  }
+  
+  .hero-card .creator-header {
+    top: 20px;
+    padding: 0.8rem 1rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);  /* Added background for visibility */
+    z-index: 20;
+  }
+  
+  .creator-name {
+    font-size: 1.2rem;  /* Increased from 1rem */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);  /* Added text shadow for better visibility */
+  }
+  
+  .creator-handle {
+    font-size: 1.4rem;  /* Increased from 1.2rem */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);  /* Added text shadow for better visibility */
   }
   
   .hero-content {
@@ -3894,6 +4321,64 @@ body {
   }
 }
 
+/* Instagram Live Feed */
+.instagram-live-feed {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(10%);
+  z-index: 15;
+  width: 300px;
+  height: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.instagram-live-feed.animate-child-in {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.instagram-live-container {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Adjust hero card position to make room for Instagram feed */
+.hero-card {
+  right: 300px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .instagram-live-feed {
+    width: 250px;
+    height: 350px;
+  }
+  
+  .hero-card {
+    right: 250px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .instagram-live-feed {
+    display: none; /* Hide on tablets and mobile */
+  }
+  
+  .hero-card {
+    right: 0 !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
 /* Large screen optimizations */
 @media (min-width: 1920px) {
   #root {
@@ -3902,5 +4387,17 @@ body {
   
   .hero-content {
     max-width: 700px;
+  }
+  
+  /* Larger hero card for desktop */
+  .hero-card {
+    width: 300px !important;
+    height: 420px !important;
+  }
+  
+  /* Larger diamond for desktop */
+  .hero-diamond-gray {
+    width: 350px !important;
+    height: 470px !important;
   }
 }

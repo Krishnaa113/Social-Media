@@ -15,14 +15,7 @@ const AboutPage = () => (
           </p>
         </div>
 
-        <div className="about-actions" data-animate-child>
-          <p>
-            To book a free consultation with us and kickstart your growth through social media, please fill out the <strong className="highlight">"contact us" form</strong>.
-          </p>
-          <p>
-            To enroll in our social media and marketing courses, please fill out the <strong className="highlight">"learn" form</strong>.
-          </p>
-        </div>
+       
       </div>
 
       <div className="about-stats" data-animate-child>
